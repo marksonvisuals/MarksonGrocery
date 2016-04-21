@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MarksonGroceries.Models;
 
 namespace MarksonGroceries.Controllers
 {
@@ -10,21 +11,28 @@ namespace MarksonGroceries.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var cart2 = new CartModel();
+            //For Null Propogation, you need to use Visual Studio 2015 (C# 6.0)
+            if (HttpContext.Session?["cartSize"] != null)
+            {
+                cart2 = (CartModel)HttpContext.Session["cartSize"];
+            }
+
+            return View(cart2);
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
 
-            return View();
+        public void SetVar()
+        {
+            var changeCart = new CartModel { cart = CartSize.Jumbo };
+            if (HttpContext.Session != null) HttpContext.Session["cartSize"] = changeCart;
         }
 
-        public ActionResult Contact()
+        public void ChangeVar()
         {
-            ViewBag.Message = "Your contact page.";
 
-            return View();
+            var changeCart = new CartModel { cart = CartSize.Medium };
+            if (HttpContext.Session != null) HttpContext.Session["cartSize"] = changeCart;
         }
     }
 }
