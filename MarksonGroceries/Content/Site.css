@@ -22,3 +22,11 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.row {
+    margin-bottom: 50px;
+}
+
+.produceBoxes {
+    margin: 18px;
+}

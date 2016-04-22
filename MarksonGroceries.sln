@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarksonGroceries", "MarksonGroceries\MarksonGroceries.csproj", "{42BB120B-48DF-4396-9CCD-4B62E753ADDE}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MarksonGroceries.Data", "MarksonGroceries.Data\MarksonGroceries.Data.sqlproj", "{B9CA1762-66AE-4510-9829-BAAFB0C6C2AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,12 @@ Global
 		{42BB120B-48DF-4396-9CCD-4B62E753ADDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42BB120B-48DF-4396-9CCD-4B62E753ADDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42BB120B-48DF-4396-9CCD-4B62E753ADDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9CA1762-66AE-4510-9829-BAAFB0C6C2AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9CA1762-66AE-4510-9829-BAAFB0C6C2AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9CA1762-66AE-4510-9829-BAAFB0C6C2AE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B9CA1762-66AE-4510-9829-BAAFB0C6C2AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9CA1762-66AE-4510-9829-BAAFB0C6C2AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9CA1762-66AE-4510-9829-BAAFB0C6C2AE}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
