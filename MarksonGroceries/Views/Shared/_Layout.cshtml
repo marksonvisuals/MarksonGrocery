@@ -22,9 +22,12 @@
                 @Html.ActionLink("Markson Groceries", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+                @*<ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                </ul>
+                </ul>*@
+                <div class="total">
+                    Total: $<span class="totalNumber"></span>
+                </div>
             </div>
         </div>
     </div>

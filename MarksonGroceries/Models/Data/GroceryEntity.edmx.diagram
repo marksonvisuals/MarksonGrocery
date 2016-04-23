@@ -5,13 +5,15 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="d24b0c217bb840e8969ad1a2fb970b8d" Name="Diagram1">
-        <EntityTypeShape EntityType="GroceriesModel.Cart" Width="1.5" PointX="5.25" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="GroceriesModel.CartSize" Width="1.5" PointX="0.75" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="GroceriesModel.Customer" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="GroceriesModel.Produce" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
-        <AssociationConnector Association="GroceriesModel.FK_Cart_ToCustomer" ManuallyRouted="false" />
-        <AssociationConnector Association="GroceriesModel.FK_Cart_ToProduce" ManuallyRouted="false" />
-        <AssociationConnector Association="GroceriesModel.FK_Customer_ToCartSizes" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="GroceriesModel.Cart" Width="1.5" PointX="5.25" PointY="1.25" />
+        <EntityTypeShape EntityType="GroceriesModel.CartSize" Width="1.5" PointX="0.75" PointY="5.375" />
+        <EntityTypeShape EntityType="GroceriesModel.CheckoutType" Width="1.5" PointX="0.75" PointY="1.375" />
+        <EntityTypeShape EntityType="GroceriesModel.Customer" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="GroceriesModel.Produce" Width="1.5" PointX="3" PointY="5.375" />
+        <AssociationConnector Association="GroceriesModel.FK_Cart_ToCustomer" />
+        <AssociationConnector Association="GroceriesModel.FK_Cart_ToProduce" />
+        <AssociationConnector Association="GroceriesModel.FK_Customer_ToCartSizes" />
+        <AssociationConnector Association="GroceriesModel.FK_Customer_ToCheckoutTypes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

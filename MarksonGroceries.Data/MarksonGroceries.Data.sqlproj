@@ -66,8 +66,15 @@
     <Build Include="Tables\CartSizes.sql" />
     <Build Include="Tables\Produce.sql" />
     <Build Include="Tables\Cart.sql" />
+    <Build Include="Stored Procedures\SetProduceValues.sql" />
+    <Build Include="Stored Procedures\SetCartSizeValues.sql" />
+    <Build Include="Tables\CheckoutTypes.sql" />
+    <Build Include="Stored Procedures\SetCheckoutTypeValues.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Publish Profile\MarksonGroceries.Data.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="MarksonGroceries.Data.refactorlog" />
   </ItemGroup>
 </Project>

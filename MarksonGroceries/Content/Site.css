@@ -27,6 +27,37 @@ textarea {
     margin-bottom: 50px;
 }
 
+
+
 .produceBoxes {
     margin: 18px;
+}
+
+.produceBoxes:not(.active), .checkoutBoxes:not(.active) {
+    color: #000;
+    background-color: #D3D3D3;
+    border-color: #D3D3D3;
+
+}
+
+.checkoutBoxes {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.total {
+    color: white;
+    margin: 15px 15px 15px 15px;
+    float: right;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+.produceRow {
+    margin-top: -15px;
+}
+
+
+.marginTop15 {
+    margin-top: 15px;
 }

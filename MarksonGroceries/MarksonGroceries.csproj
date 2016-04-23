@@ -153,6 +153,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\API\CheckoutController.cs" />
     <Compile Include="Controllers\API\ProduceController.cs" />
     <Compile Include="Controllers\API\CustomerController.cs" />
     <Compile Include="Controllers\API\CartController.cs" />
@@ -163,10 +164,14 @@
     <Compile Include="Helpers\HttpClient\IHttpClientInitializer.cs" />
     <Compile Include="Helpers\HttpClient\HttpClientInitializer.cs" />
     <Compile Include="Models\CartView.cs" />
+    <Compile Include="Models\CheckoutView.cs" />
     <Compile Include="Models\Data\Cart.cs">
       <DependentUpon>GroceryEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\CartSize.cs">
+      <DependentUpon>GroceryEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Data\CheckoutType.cs">
       <DependentUpon>GroceryEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\Customer.cs">

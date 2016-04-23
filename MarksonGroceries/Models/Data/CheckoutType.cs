@@ -12,23 +12,18 @@ namespace MarksonGroceries.Models.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Customer
+    public partial class CheckoutType
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Customer()
+        public CheckoutType()
         {
-            this.Carts = new HashSet<Cart>();
+            this.Customers = new HashSet<Customer>();
         }
     
         public int Id { get; set; }
-        public string SessionId { get; set; }
-        public int CartSizeId { get; set; }
-        public Nullable<int> CheckoutTypeId { get; set; }
-        public Nullable<System.DateTime> CheckoutTime { get; set; }
+        public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Cart> Carts { get; set; }
-        public virtual CartSize CartSize { get; set; }
-        public virtual CheckoutType CheckoutType { get; set; }
+        public virtual ICollection<Customer> Customers { get; set; }
     }
 }

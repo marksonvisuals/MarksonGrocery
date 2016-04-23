@@ -30,9 +30,18 @@ namespace MarksonGroceries.Controllers
             var cartView = GetCurrentCustomer();
             var produce = GetAllProduce();
             var produceInCart = GetAllProduceInCart(cartView.Id);
-            cartView.produceItems = SetProduceListWithProduceInCart(produce, produceInCart);
+            cartView.CartSizes = GetAllCartSizes();
+            cartView.CheckoutTypes = GetAllCheckoutTypes();
+            cartView.ProduceItems = SetProduceListWithProduceInCart(produce, produceInCart);
 
             return View(cartView);
+        }
+
+        public void ResetSession()
+        {
+            Session.Abandon();
+            Response.Cookies.Add(new HttpCookie("ASP.NET_SessionId", ""));
+
         }
 
         public List<ProduceView> GetAllProduce()
@@ -83,6 +92,30 @@ namespace MarksonGroceries.Controllers
             }
 
             return allProduce;
+        }
+
+        public List<CheckoutView> GetAllCheckoutTypes()
+        {
+            var allCheckoutTypes = new List<CheckoutView>();
+
+            try
+            {
+                var httpResponse = _httpClient.GetAsync("/api/Checkout/GetAllCheckoutTypes/").Result;
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var content = httpResponse.Content.ReadAsAsync<List<CheckoutType>>().Result;
+                    allCheckoutTypes = MapDataListCheckoutTypeToListCheckoutView(content);
+                }
+
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return allCheckoutTypes;
         }
 
         public CartView GetCurrentCustomer()
@@ -140,9 +173,10 @@ namespace MarksonGroceries.Controllers
             return new CartView
             {
                 Id = customer.Id,
-                currentCartSize = customer.CartSizeId,
-                cartSizes = GetAllCartSizes(),
-                produceItems = new List<ProduceView>()
+                CurrentCartSize = customer.CartSizeId,
+                CartSizes = new List<CartViewSize>(),
+                ProduceItems = new List<ProduceView>(),
+                CheckoutTypes = new List<CheckoutView>()
 
             };
         }
@@ -158,6 +192,20 @@ namespace MarksonGroceries.Controllers
             {
               Id  = cartsize.Id,
               CartSize = cartsize.Name
+            };
+        }
+
+        private List<CheckoutView> MapDataListCheckoutTypeToListCheckoutView(List<CheckoutType> checkoutTypes)
+        {
+            return checkoutTypes.Select(MapDataCheckoutTypeToheckoutView).ToList();
+        }
+
+        private CheckoutView MapDataCheckoutTypeToheckoutView(CheckoutType checkoutType)
+        {
+            return new CheckoutView
+            {
+                CheckoutId = checkoutType.Id,
+                CheckoutName = checkoutType.Name
             };
         }
 

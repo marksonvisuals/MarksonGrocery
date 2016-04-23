@@ -18,7 +18,7 @@ namespace MarksonGroceries.Models.Data
         public GroceriesEntities()
             : base("name=GroceriesEntities")
         {
-            this.Configuration.ProxyCreationEnabled = false;
+            Configuration.ProxyCreationEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -28,6 +28,7 @@ namespace MarksonGroceries.Models.Data
     
         public virtual DbSet<Cart> Carts { get; set; }
         public virtual DbSet<CartSize> CartSizes { get; set; }
+        public virtual DbSet<CheckoutType> CheckoutTypes { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Produce> Produces { get; set; }
     }

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="GroceriesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="GroceriesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Cart">
           <Key>
             <PropertyRef Name="Id" />
@@ -20,6 +20,13 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="10" Nullable="false" />
         </EntityType>
+        <EntityType Name="CheckoutTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Id" />
@@ -27,6 +34,8 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SessionId" Type="nvarchar" MaxLength="25" Nullable="false" />
           <Property Name="CartSizeId" Type="int" Nullable="false" />
+          <Property Name="CheckoutTypeId" Type="int" />
+          <Property Name="CheckoutTime" Type="datetime2" Precision="0" />
         </EntityType>
         <EntityType Name="Produce">
           <Key>
@@ -72,9 +81,22 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Customer_ToCheckoutTypes">
+          <End Role="CheckoutTypes" Type="Self.CheckoutTypes" Multiplicity="0..1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CheckoutTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="CheckoutTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="GroceriesModelStoreContainer">
           <EntitySet Name="Cart" EntityType="Self.Cart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CartSizes" EntityType="Self.CartSizes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CheckoutTypes" EntityType="Self.CheckoutTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Produce" EntityType="Self.Produce" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Cart_ToCustomer" Association="Self.FK_Cart_ToCustomer">
@@ -89,12 +111,38 @@
             <End Role="CartSizes" EntitySet="CartSizes" />
             <End Role="Customer" EntitySet="Customer" />
           </AssociationSet>
+          <AssociationSet Name="FK_Customer_ToCheckoutTypes" Association="Self.FK_Customer_ToCheckoutTypes">
+            <End Role="CheckoutTypes" EntitySet="CheckoutTypes" />
+            <End Role="Customer" EntitySet="Customer" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="GroceriesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="GroceriesEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Carts" EntityType="GroceriesModel.Cart" />
+          <EntitySet Name="CartSizes" EntityType="GroceriesModel.CartSize" />
+          <EntitySet Name="CheckoutTypes" EntityType="GroceriesModel.CheckoutType" />
+          <EntitySet Name="Customers" EntityType="GroceriesModel.Customer" />
+          <EntitySet Name="Produces" EntityType="GroceriesModel.Produce" />
+          <AssociationSet Name="FK_Cart_ToCustomer" Association="GroceriesModel.FK_Cart_ToCustomer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Cart" EntitySet="Carts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cart_ToProduce" Association="GroceriesModel.FK_Cart_ToProduce">
+            <End Role="Produce" EntitySet="Produces" />
+            <End Role="Cart" EntitySet="Carts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_ToCartSizes" Association="GroceriesModel.FK_Customer_ToCartSizes">
+            <End Role="CartSize" EntitySet="CartSizes" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_ToCheckoutTypes" Association="GroceriesModel.FK_Customer_ToCheckoutTypes">
+            <End Role="CheckoutType" EntitySet="CheckoutTypes" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Cart">
           <Key>
             <PropertyRef Name="Id" />
@@ -102,39 +150,50 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CustomerId" Type="Int32" Nullable="false" />
           <Property Name="ProduceId" Type="Int32" />
-          <NavigationProperty Name="Customer" Relationship="Self.FK_Cart_ToCustomer" FromRole="Cart" ToRole="Customer" />
-          <NavigationProperty Name="Produce" Relationship="Self.FK_Cart_ToProduce" FromRole="Cart" ToRole="Produce" />
+          <NavigationProperty Name="Customer" Relationship="GroceriesModel.FK_Cart_ToCustomer" FromRole="Cart" ToRole="Customer" />
+          <NavigationProperty Name="Produce" Relationship="GroceriesModel.FK_Cart_ToProduce" FromRole="Cart" ToRole="Produce" />
         </EntityType>
         <EntityType Name="CartSize">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Customers" Relationship="Self.FK_Customer_ToCartSizes" FromRole="CartSizes" ToRole="Customer" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Customers" Relationship="GroceriesModel.FK_Customer_ToCartSizes" FromRole="CartSize" ToRole="Customer" />
+        </EntityType>
+        <EntityType Name="CheckoutType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Customers" Relationship="GroceriesModel.FK_Customer_ToCheckoutTypes" FromRole="CheckoutType" ToRole="Customer" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SessionId" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SessionId" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="CartSizeId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Carts" Relationship="Self.FK_Cart_ToCustomer" FromRole="Customer" ToRole="Cart" />
-          <NavigationProperty Name="CartSize" Relationship="Self.FK_Customer_ToCartSizes" FromRole="Customer" ToRole="CartSizes" />
+          <Property Name="CheckoutTypeId" Type="Int32" />
+          <Property Name="CheckoutTime" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Carts" Relationship="GroceriesModel.FK_Cart_ToCustomer" FromRole="Customer" ToRole="Cart" />
+          <NavigationProperty Name="CartSize" Relationship="GroceriesModel.FK_Customer_ToCartSizes" FromRole="Customer" ToRole="CartSize" />
+          <NavigationProperty Name="CheckoutType" Relationship="GroceriesModel.FK_Customer_ToCheckoutTypes" FromRole="Customer" ToRole="CheckoutType" />
         </EntityType>
         <EntityType Name="Produce">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <NavigationProperty Name="Carts" Relationship="Self.FK_Cart_ToProduce" FromRole="Produce" ToRole="Cart" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <NavigationProperty Name="Carts" Relationship="GroceriesModel.FK_Cart_ToProduce" FromRole="Produce" ToRole="Cart" />
         </EntityType>
         <Association Name="FK_Cart_ToCustomer">
-          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
-          <End Role="Cart" Type="Self.Cart" Multiplicity="*" />
+          <End Type="GroceriesModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="GroceriesModel.Cart" Role="Cart" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Customer">
               <PropertyRef Name="Id" />
@@ -145,8 +204,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Cart_ToProduce">
-          <End Role="Produce" Type="Self.Produce" Multiplicity="0..1" />
-          <End Role="Cart" Type="Self.Cart" Multiplicity="*" />
+          <End Type="GroceriesModel.Produce" Role="Produce" Multiplicity="0..1" />
+          <End Type="GroceriesModel.Cart" Role="Cart" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Produce">
               <PropertyRef Name="Id" />
@@ -157,10 +216,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Customer_ToCartSizes">
-          <End Role="CartSizes" Type="Self.CartSize" Multiplicity="1" />
-          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <End Type="GroceriesModel.CartSize" Role="CartSize" Multiplicity="1" />
+          <End Type="GroceriesModel.Customer" Role="Customer" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="CartSizes">
+            <Principal Role="CartSize">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Customer">
@@ -168,24 +227,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="GroceriesEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Carts" EntityType="Self.Cart" />
-          <EntitySet Name="CartSizes" EntityType="Self.CartSize" />
-          <EntitySet Name="Customers" EntityType="Self.Customer" />
-          <EntitySet Name="Produces" EntityType="Self.Produce" />
-          <AssociationSet Name="FK_Cart_ToCustomer" Association="Self.FK_Cart_ToCustomer">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="Cart" EntitySet="Carts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Cart_ToProduce" Association="Self.FK_Cart_ToProduce">
-            <End Role="Produce" EntitySet="Produces" />
-            <End Role="Cart" EntitySet="Carts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Customer_ToCartSizes" Association="Self.FK_Customer_ToCartSizes">
-            <End Role="CartSizes" EntitySet="CartSizes" />
-            <End Role="Customer" EntitySet="Customers" />
-          </AssociationSet>
-        </EntityContainer>
+        <Association Name="FK_Customer_ToCheckoutTypes">
+          <End Type="GroceriesModel.CheckoutType" Role="CheckoutType" Multiplicity="0..1" />
+          <End Type="GroceriesModel.Customer" Role="Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CheckoutType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="CheckoutTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -195,35 +248,45 @@
           <EntitySetMapping Name="Carts">
             <EntityTypeMapping TypeName="GroceriesModel.Cart">
               <MappingFragment StoreEntitySet="Cart">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="ProduceId" ColumnName="ProduceId" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CartSizes">
             <EntityTypeMapping TypeName="GroceriesModel.CartSize">
               <MappingFragment StoreEntitySet="CartSizes">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CheckoutTypes">
+            <EntityTypeMapping TypeName="GroceriesModel.CheckoutType">
+              <MappingFragment StoreEntitySet="CheckoutTypes">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="GroceriesModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="SessionId" ColumnName="SessionId" />
+                <ScalarProperty Name="CheckoutTime" ColumnName="CheckoutTime" />
+                <ScalarProperty Name="CheckoutTypeId" ColumnName="CheckoutTypeId" />
                 <ScalarProperty Name="CartSizeId" ColumnName="CartSizeId" />
+                <ScalarProperty Name="SessionId" ColumnName="SessionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Produces">
             <EntityTypeMapping TypeName="GroceriesModel.Produce">
               <MappingFragment StoreEntitySet="Produce">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

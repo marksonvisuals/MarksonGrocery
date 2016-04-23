@@ -8,10 +8,10 @@ namespace MarksonGroceries.Models
     public class CartView
     {
         public int Id { get; set; }
-
-        public int currentCartSize { get; set; }
-        public List<CartViewSize> cartSizes { get; set; } 
-        public List<ProduceView> produceItems { get; set; }
+        public int CurrentCartSize { get; set; }
+        public List<CartViewSize> CartSizes { get; set; } 
+        public List<ProduceView> ProduceItems { get; set; }
+        public List<CheckoutView> CheckoutTypes { get; set; } 
     }
 
     public class CartViewSize

@@ -5,37 +5,101 @@
 
 <script type="text/javascript" src="~/Scripts/Views/Home/HomeControllerJS.js"></script>
 
+<input type="hidden" id="customerId" value="@Model.Id" />
+
+<div class="alert alert-danger marginTop15" id="CartSizeError" style="display: none;" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    You must select a cart size!
+</div>
 <div>
     <h4>Select your cart size</h4>
 </div>
 
-<input type="hidden" id="customerId" value="@Model.Id"/>
+
 <div class="row">
     @{
-        foreach (var c in Model.cartSizes)
+        if (Model.CartSizes != null)
         {
-            <div class="col-md-2">
-                <button class="btn @(Model.currentCartSize == c.Id ? "btn-primary" : "btn-secondary" ) cartSizeBtn" data-id="@c.Id">@c.CartSize</button>
-            </div>
+            foreach (var c in Model.CartSizes)
+            {
+                <div class="col-md-2">
+                    <button class="btn @(Model.CurrentCartSize == c.Id ? "btn-primary" : "btn-secondary" ) cartSizeBtn" data-id="@c.Id">@c.CartSize</button>
+                </div>
+            }
         }
     }
 
 </div>
 
+<div class="alert alert-danger" id="ProduceError" style="display: none;" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    You must select one or more pieces of produce!
+</div>
 <div>
     <h4>Select Produce for your cart</h4>
 </div>
-<div class="row">
+<div class="row produceRow">
     <div data-toggle="buttons">
         @{
-            foreach (var p in Model.produceItems)
+            if (Model.ProduceItems != null)
             {
-                <label class="btn btn-primary col-md-2 produceBoxes @(p.CurrentlyInCart?"active":"")">
-                    <input type="checkbox" data-id="@p.Id" @(p.CurrentlyInCart ? "Checked=Checked" : "") data-price="@p.ItemPrice" autocomplete="off"> <span>@p.ItemName - @(p.ItemPrice.ToString("C"))</span>
-                </label>
+                foreach (var p in Model.ProduceItems)
+                {
+                    <label class="btn btn-primary col-md-2 produceBoxes @(p.CurrentlyInCart ? "active" : "")">
+                        <input type="checkbox" data-id="@p.Id" @(p.CurrentlyInCart ? "Checked=Checked" : "") data-price="@p.ItemPrice" autocomplete="off"> <span>@p.ItemName - @(p.ItemPrice.ToString("C"))</span>
+                    </label>
+                }
             }
         }
     </div>
 </div>
 
+<div>
+    <h4>Select Checkout Type</h4>
+</div>
+<div class="row checkoutRow text-center">
 
+    @for (var index = 0; index < Model.CheckoutTypes.Count; index++)
+    {
+        var c = Model.CheckoutTypes[index];
+        <div class="col-md-4 @(index%2 == 0?"col-md-offset-2":"")">
+            <button class="btn btn-secondary checkoutBoxes" data-type="@c.CheckoutName" data-id="@c.CheckoutId">@c.CheckoutName</button>
+        </div>
+    }
+
+</div>
+
+<div class="modal fade" id="checkoutModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="checkoutSentence">Checkout Overview</h4>
+            </div>
+            <div class="modal-body">
+                
+                <div id="successCheckoutHolder" style="display: none;">
+                    <div class="alert alert-success" role="alert">
+                        Thank you for shopping at Markson Groceries!
+                    </div>
+                </div>
+                <div id="errorCheckoutHolder" style="display: none;">
+                    <div class="alert alert-danger" role="alert">
+                        We're so sorry! An error has occured! Let's try that again!
+                    </div>
+                </div>
+                <div id="grandTotalHolder">
+                    <strong><span>Your grand total is: $</span><span id="grandTotal"></span></strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitCheckout">Confirm</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
